@@ -34,9 +34,14 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll().stream()
+        logger.info("Fetching all categories");
+
+        List<CategoryDTO> categories =  categoryRepository.findAll().stream()
                 .map(CategoryMapper::toDTO)
                 .collect(Collectors.toList());
+
+        logger.info("Fetched {} categories", categories.size());
+        return categories;
     }
 
 
