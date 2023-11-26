@@ -8,19 +8,23 @@ import com.api.storemanagement.repositories.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final Logger logger = LoggerFactory.getLogger(CategoryService.class);
 
-    public CategoryService(CategoryRepository categoryRepository){
+    public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
-    public Category addCategory(CategoryDTO categoryDTO){
+    public Category addCategory(CategoryDTO categoryDTO) {
         logger.info("Attempting to add new category: {}", categoryDTO.getName());
 
-        var existingCategory =  categoryRepository.findByName(categoryDTO.getName());
+        var existingCategory = categoryRepository.findByName(categoryDTO.getName());
         existingCategory.ifPresent(c -> {
             throw new CategoryAlreadyExistsException("Category with name " + categoryDTO.getName() + " already exists");
         });
@@ -28,5 +32,12 @@ public class CategoryService {
         Category category = CategoryMapper.toEntity(categoryDTO);
         return categoryRepository.save(category);
     }
+
+    public List<CategoryDTO> getAllCategories() {
+        return categoryRepository.findAll().stream()
+                .map(CategoryMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }

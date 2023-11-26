@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +49,7 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void addCategory_ifCategoryExists_ShouldThrowCategoryAlreadyExistsException() {
+    public void addCategory_ifCategoryExists_shouldThrowCategoryAlreadyExistsException() {
         CategoryDTO existingCategoryDTO = new CategoryDTO("Electronics", "Electronic gadgets");
         Category existingCategory = new Category("Electronics", "Electronic gadgets");
 
@@ -58,4 +61,27 @@ public class CategoryServiceTest {
 
         verify(categoryRepository, never()).save(any(Category.class));
     }
+
+    @Test
+    public void getAllCategories_whenCalled_shouldReturnListOfCategoryDTOs(){
+        Category category1 = new Category("Electronics", "Electronic gadgets");
+        Category category2 = new Category("Clothes", "Winter clothes");
+
+        when(categoryRepository.findAll()).thenReturn(Arrays.asList(category1, category2));
+
+        List<CategoryDTO> result = categoryService.getAllCategories();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+    @Test
+    void getAllCategories_whenNoCategoriesExist_shouldReturnEmptyList() {
+        when(categoryRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<CategoryDTO> result = categoryService.getAllCategories();
+
+        assertNotNull(result, "The result should not be null");
+        assertTrue(result.isEmpty(), "The result should be an empty list");
+    }
+
 }
