@@ -1,0 +1,32 @@
+package com.api.storemanagement.service;
+
+import com.api.storemanagement.dto.CategoryDTO;
+import com.api.storemanagement.entities.Category;
+import com.api.storemanagement.exceptions.CategoryAlreadyExistsException;
+import com.api.storemanagement.mapper.CategoryMapper;
+import com.api.storemanagement.repositories.CategoryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+@Service
+public class CategoryService {
+    private final CategoryRepository categoryRepository;
+    private final Logger logger = LoggerFactory.getLogger(CategoryService.class);
+
+    public CategoryService(CategoryRepository categoryRepository){
+        this.categoryRepository = categoryRepository;
+    }
+
+    public Category addCategory(CategoryDTO categoryDTO){
+        logger.info("Attempting to add new category: {}", categoryDTO.getName());
+
+        var existingCategory =  categoryRepository.findByName(categoryDTO.getName());
+        existingCategory.ifPresent(c -> {
+            throw new CategoryAlreadyExistsException("Category with name " + categoryDTO.getName() + " already exists");
+        });
+
+        Category category = CategoryMapper.toEntity(categoryDTO);
+        return categoryRepository.save(category);
+    }
+
+}
