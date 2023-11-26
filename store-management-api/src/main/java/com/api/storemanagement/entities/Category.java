@@ -14,11 +14,14 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private String name;
     private String description;
 
     @OneToMany(mappedBy = "category")
     public Set<Product> products;
 
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }
