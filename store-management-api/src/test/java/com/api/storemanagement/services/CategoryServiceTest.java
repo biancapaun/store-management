@@ -3,13 +3,12 @@ package com.api.storemanagement.services;
 import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.entities.Category;
 import com.api.storemanagement.exceptions.CategoryAlreadyExistsException;
+import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
 import com.api.storemanagement.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,7 +74,7 @@ public class CategoryServiceTest {
         assertEquals(2, result.size());
     }
     @Test
-    void getAllCategories_whenNoCategoriesExist_shouldReturnEmptyList() {
+    public void getAllCategories_whenNoCategoriesExist_shouldReturnEmptyList() {
         when(categoryRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<CategoryDTO> result = categoryService.getAllCategories();
@@ -83,5 +82,38 @@ public class CategoryServiceTest {
         assertNotNull(result, "The result should not be null");
         assertTrue(result.isEmpty(), "The result should be an empty list");
     }
+    @Test
+    public void getCategoryByName_whenCalled_shouldReturnCategoryDTO() {
+        String categoryName = "Electronics";
+        Category category = new Category("Electronics", "Electronic gadgets");
+        CategoryDTO categoryDTO = new CategoryDTO("Electronics", "Electronic gadgets");
+
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.of(category));
+
+        try (MockedStatic<CategoryMapper> mockedStatic = Mockito.mockStatic(CategoryMapper.class)) {
+            mockedStatic.when(() -> CategoryMapper.toDTO(category)).thenReturn(categoryDTO);
+
+            Optional<CategoryDTO> result = categoryService.getCategoryByName(categoryName);
+
+            assertTrue(result.isPresent());
+            assertEquals(categoryDTO, result.get());
+        }
+
+        verify(categoryRepository).findByName(categoryName);
+    }
+
+    @Test
+    public void getCategoryByName_whenCategoryNotFound_shouldReturnEmptyOptional() {
+        String categoryName = "NonExistentCategory";
+
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
+
+        Optional<CategoryDTO> result = categoryService.getCategoryByName(categoryName);
+
+        assertFalse(result.isPresent(), "Result should be empty when the category is not found");
+
+        verify(categoryRepository).findByName(categoryName);
+    }
+
 
 }
