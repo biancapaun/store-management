@@ -23,7 +23,7 @@ public class Product {
     @Column(precision = 3, scale = 2)
     private BigDecimal rating;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Price> prices;
 
     @ManyToOne
