@@ -1,10 +1,12 @@
 package com.api.storemanagement.service;
 
+import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.dto.ProductDTO;
 import com.api.storemanagement.entities.Category;
 import com.api.storemanagement.entities.Price;
 import com.api.storemanagement.entities.Product;
 import com.api.storemanagement.exceptions.ResourceAlreadyExistsException;
+import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.mapper.PriceMapper;
 import com.api.storemanagement.mapper.ProductMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -113,6 +116,17 @@ public class ProductService {
         price.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
         price.setEndDate(null);
         logger.info("Setting new current price for Price ID: {}", price.getId());
+    }
+
+    public List<ProductDTO> getAllProducts() {
+        logger.info("Fetching all products");
+
+        List<ProductDTO> products =  productRepository.findAll().stream()
+                .map(ProductMapper::toDTO)
+                .collect(Collectors.toList());
+
+        logger.info("Fetched {} products", products.size());
+        return products;
     }
 
 

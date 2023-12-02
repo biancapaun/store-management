@@ -1,15 +1,16 @@
 package com.api.storemanagement.controller;
 
 import com.api.storemanagement.dto.ApiResponse;
+import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.dto.ProductDTO;
 import com.api.storemanagement.entities.Product;
 import com.api.storemanagement.mapper.ProductMapper;
 import com.api.storemanagement.service.ProductService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -40,6 +41,12 @@ public class ProductController {
                 .orElseGet(() -> new ResponseEntity<>(
                         new ApiResponse("Product or Price not found", null),
                         HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.getAllProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
 
