@@ -2,7 +2,7 @@ package com.api.storemanagement.service;
 
 import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.entities.Category;
-import com.api.storemanagement.exceptions.CategoryAlreadyExistsException;
+import com.api.storemanagement.exceptions.ResourceAlreadyExistsException;
 import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class CategoryService {
 
         var existingCategory = categoryRepository.findByName(categoryDTO.getName());
         existingCategory.ifPresent(c -> {
-            throw new CategoryAlreadyExistsException("Category with name " + categoryDTO.getName() + " already exists");
+            throw new ResourceAlreadyExistsException("Category with name " + categoryDTO.getName() + " already exists");
         });
 
         Category category = CategoryMapper.toEntity(categoryDTO);

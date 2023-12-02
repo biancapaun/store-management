@@ -2,7 +2,7 @@ package com.api.storemanagement.services;
 
 import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.entities.Category;
-import com.api.storemanagement.exceptions.CategoryAlreadyExistsException;
+import com.api.storemanagement.exceptions.ResourceAlreadyExistsException;
 import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
 import com.api.storemanagement.service.CategoryService;
@@ -54,7 +54,7 @@ public class CategoryServiceTest {
 
         when(categoryRepository.findByName(existingCategoryDTO.getName())).thenReturn(Optional.of(existingCategory));
 
-        assertThrows(CategoryAlreadyExistsException.class, () -> {
+        assertThrows(ResourceAlreadyExistsException.class, () -> {
             categoryService.addCategory(existingCategoryDTO);
         }, "A CategoryAlreadyExistsException should be thrown");
 
