@@ -5,6 +5,7 @@ import com.api.storemanagement.entities.Category;
 import com.api.storemanagement.exceptions.ResourceAlreadyExistsException;
 import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public Category addCategory(CategoryDTO categoryDTO) {
         logger.info("Attempting to add new category: {}", categoryDTO.getName());
 
