@@ -29,8 +29,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CategoryAlreadyExistsException.class)
-    public ResponseEntity<String> handleCategoryAlreadyExistsException(CategoryAlreadyExistsException ex) {
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<String> handleCategoryAlreadyExistsException(ResourceAlreadyExistsException ex) {
         logger.error("Error: {}", ex.getMessage());
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
