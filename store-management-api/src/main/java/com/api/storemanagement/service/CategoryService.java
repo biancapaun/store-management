@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +43,21 @@ public class CategoryService {
 
         logger.info("Fetched {} categories", categories.size());
         return categories;
+    }
+
+    public Optional<CategoryDTO> getCategoryByName(String name) {
+        logger.info("Attempting to fetch category with name: {}", name);
+
+        Optional<CategoryDTO> categoryDTO = categoryRepository.findByName(name)
+                .map(CategoryMapper::toDTO);
+
+        if (categoryDTO.isPresent()) {
+            logger.info("Category with name '{}' found", name);
+        } else {
+            logger.info("Category with name '{}' not found", name);
+        }
+
+        return categoryDTO;
     }
 
 
