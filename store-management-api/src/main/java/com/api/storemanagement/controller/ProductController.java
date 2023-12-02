@@ -1,7 +1,6 @@
 package com.api.storemanagement.controller;
 
 import com.api.storemanagement.dto.ApiResponse;
-import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.dto.ProductDTO;
 import com.api.storemanagement.entities.Product;
 import com.api.storemanagement.mapper.ProductMapper;
@@ -47,6 +46,18 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = productService.getAllProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name) {
+        Optional<ProductDTO> productDTO = productService.getProductByName(name);
+        return productDTO
+                .map(dto -> new ResponseEntity<>(
+                        new ApiResponse( "Product found", dto),
+                        HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(
+                        new ApiResponse( "Product with name " + name + " not found", null),
+                        HttpStatus.NOT_FOUND));
     }
 
 

@@ -1,12 +1,10 @@
 package com.api.storemanagement.service;
 
-import com.api.storemanagement.dto.CategoryDTO;
 import com.api.storemanagement.dto.ProductDTO;
 import com.api.storemanagement.entities.Category;
 import com.api.storemanagement.entities.Price;
 import com.api.storemanagement.entities.Product;
 import com.api.storemanagement.exceptions.ResourceAlreadyExistsException;
-import com.api.storemanagement.mapper.CategoryMapper;
 import com.api.storemanagement.mapper.PriceMapper;
 import com.api.storemanagement.mapper.ProductMapper;
 import com.api.storemanagement.repositories.CategoryRepository;
@@ -127,6 +125,21 @@ public class ProductService {
 
         logger.info("Fetched {} products", products.size());
         return products;
+    }
+
+    public Optional<ProductDTO> getProductByName(String name) {
+        logger.info("Attempting to fetch product with name: {}", name);
+
+        Optional<ProductDTO> productDTO = productRepository.findByName(name)
+                .map(ProductMapper::toDTO);
+
+        if (productDTO.isPresent()) {
+            logger.info("Product with name '{}' found", name);
+        } else {
+            logger.info("Product with name '{}' not found", name);
+        }
+
+        return productDTO;
     }
 
 
