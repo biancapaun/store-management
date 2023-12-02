@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,5 +66,54 @@ public class ProductService {
             product.setPrices(prices);
         }
     }
+
+    @Transactional
+    public Optional<Product> updateCurrentPrice(Integer productId, Integer priceId) {
+        logger.info("Attempting to update current price for product ID: {}, price ID: {}", productId, priceId);
+
+        Product product = findProduct(productId);
+        Price newCurrentPrice = findPriceInProduct(product, priceId);
+
+        closeCurrentPricePeriod(product);
+        setNewCurrentPrice(newCurrentPrice);
+
+        Product updatedProduct = productRepository.save(product);
+        logger.info("Updated current price for Product ID: {}", productId);
+        return Optional.of(updatedProduct);
+    }
+
+    private Product findProduct(Integer productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> {
+                    logger.warn("Product not found for ID: {}", productId);
+                    throw new EntityNotFoundException("Product not found");
+                });
+    }
+
+    private Price findPriceInProduct(Product product, Integer priceId) {
+        return product.getPrices().stream()
+                .filter(price -> price.getId().equals(priceId))
+                .findFirst()
+                .orElseThrow(() -> {
+                    logger.warn("Price not found for ID: {} in Product ID: {}", priceId, product.getId());
+                    throw new EntityNotFoundException("Price not found");
+                });
+    }
+
+    private void closeCurrentPricePeriod(Product product) {
+        product.getPrices().stream()
+                .filter(price -> price.getEndDate() == null)
+                .forEach(price -> {
+                    price.setEndDate(Timestamp.valueOf(LocalDateTime.now()));
+                    logger.info("Closing current price period for Price ID: {}", price.getId());
+                });
+    }
+
+    private void setNewCurrentPrice(Price price) {
+        price.setStartDate(Timestamp.valueOf(LocalDateTime.now()));
+        price.setEndDate(null);
+        logger.info("Setting new current price for Price ID: {}", price.getId());
+    }
+
 
 }
