@@ -10,8 +10,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDTO {
+
+    private Integer id;
     @NotBlank(message = "Category name must not be blank")
     private String name;
-
     private String description;
+
+    public CategoryDTO(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }
