@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class Price {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal value;
