@@ -29,6 +29,13 @@ public class CategoryController {
         return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
     }
 
+    @PostMapping
+    public ResponseEntity<CategoryDTO> addCategoryTest(@Valid @RequestBody CategoryDTO category) {
+        Category savedCategory = categoryService.addCategory(category);
+        CategoryDTO savedCategoryDTO = CategoryMapper.toDTO(savedCategory);
+        return new ResponseEntity<>(savedCategoryDTO, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categories = categoryService.getAllCategories();
