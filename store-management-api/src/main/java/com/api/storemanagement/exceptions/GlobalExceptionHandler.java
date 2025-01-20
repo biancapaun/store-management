@@ -41,10 +41,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Database error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<String> handleDatabaseExceptiontest(DataAccessException ex) {
-        logger.error("Database operation failed: {}", ex.getMessage());
-        return new ResponseEntity<>("Database error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
