@@ -42,6 +42,12 @@ public class CategoryController {
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<List<CategoryDTO>> getAllCategoriesTest() {
+        List<CategoryDTO> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
     @GetMapping("/{name}")
     public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
         Optional<CategoryDTO> categoryDTO = categoryService.getCategoryByName(name);
